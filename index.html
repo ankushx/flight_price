@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flight Price Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 8px;
+      padding: 5px;
+      background-image: url('https://i.pinimg.com/originals/66/1e/46/661e46736a33af7cfd228f0639ed271f.jpg');
+      background-size:cover;
+      background-repeat: no-repeat;
+      /* background-position: center; */
+      color: #d24d4d;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 50px;
+      background-color: rgba(224, 170, 62, 0.6);
+      border-radius: 5px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    #fetchButton {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      background-color: #b9cb1b;
+      color: #514337;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #flightPrices {
+      margin-top: 30px;
+    }
+
+    #flightPrices p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    input {
+  background-color: #e3700b;
+  color: rgb(213, 192, 33);
+}
+
+   
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Flight Price Checker</h1>
+
+    <div class="form-group">
+      <label for="source">Source:</label>
+      <input type="text" id="source" required>
+    </div>
+
+    <div class="form-group">
+      <label for="destination">Destination:</label>
+      <input type="text" id="destination" required>
+    </div>
+
+    <div class="form-group">
+      <label for="date">Date:</label>
+      <input type="date" id="date" required>
+    </div>
+
+    <button id="fetchButton">Fetch Flight Prices</button>
+
+    <div id="flightPrices"></div>
+  </div>
+
+  <script>
+    const fetchFlightPrices = () => {
+      const source = document.getElementById('source').value;
+      const destination = document.getElementById('destination').value;
+      const date = document.getElementById('date').value;
+
+      fetch(`/flight-prices?source=${source}&destination=${destination}&date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+          const flightPricesContainer = document.getElementById('flightPrices');
+          flightPricesContainer.innerHTML = '';
+
+          for (const airline in data) {
+            const price = data[airline];
+            const flightPriceElement = document.createElement('p');
+            flightPriceElement.textContent = `${airline}: ${price}`;
+            flightPricesContainer.appendChild(flightPriceElement);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    };
+
+    const fetchButton = document.getElementById('fetchButton');
+    fetchButton.addEventListener('click', fetchFlightPrices);
+  </script>
+</body>
+</html>
